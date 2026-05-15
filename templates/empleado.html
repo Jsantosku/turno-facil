@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Papelería Espacios — Empleados</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#1a1209; --paper:#fdf8ef; --cream:#f5ead6; --rust:#c0440a; --gold:#d4940a; --sage:#4a7c59; --mid:#8c7a60; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:#1e1a11; color:var(--paper); min-height:100vh; }
+    header { background:#12100a; padding:1.2rem 2rem; display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid var(--rust); }
+    .header-left { display:flex; align-items:center; gap:1.2rem; }
+    .logo-mark { width:46px; height:46px; background:var(--rust); border-radius:4px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; }
+    .brand h1 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; }
+    .brand p  { font-size:0.72rem; color:var(--mid); letter-spacing:0.1em; text-transform:uppercase; margin-top:1px; }
+    .panel-badge { background:rgba(192,68,10,0.25); color:var(--rust); border:1px solid rgba(192,68,10,0.4); padding:4px 14px; border-radius:20px; font-size:0.78rem; font-weight:500; letter-spacing:0.06em; }
+    main { max-width:1000px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+
+    .jornada-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; background:#28221a; border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:1rem 1.5rem; margin-bottom:1.5rem; }
+    .jornada-info { display:flex; align-items:center; gap:10px; }
+    .jornada-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .dot-open   { background:#7ec89a; animation:pulse 2s infinite; }
+    .dot-closed { background:#e05555; }
+    .jornada-label { font-size:0.88rem; }
+    .jornada-label strong { font-size:1rem; }
+    .jornada-actions { display:flex; gap:0.75rem; flex-wrap:wrap; }
+
+    .stat-row { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .stat-box { flex:1; min-width:110px; background:#28221a; border:1px solid rgba(255,255,255,0.07); border-radius:8px; padding:1rem; text-align:center; }
+    .stat-val { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--gold); }
+    .stat-lbl { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--mid); margin-top:2px; }
+
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+    @media(max-width:640px){ .grid{grid-template-columns:1fr;} }
+
+    .card { background:#28221a; border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:1.5rem; }
+    .card-title { font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:0.12em; color:var(--mid); margin-bottom:1rem; }
+    .current-number { font-family:'Playfair Display',serif; font-size:6rem; font-weight:900; line-height:1; color:var(--gold); text-align:center; padding:0.5rem 0 1rem; }
+    .current-dash { color:rgba(255,255,255,0.2); }
+
+    .btn-row { display:flex; gap:0.75rem; flex-wrap:wrap; }
+    .btn { padding:0.7rem 1.3rem; border:none; border-radius:5px; font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:500; cursor:pointer; transition:opacity 0.15s,transform 0.1s; text-decoration:none; display:inline-block; }
+    .btn:hover  { opacity:0.88; transform:translateY(-1px); }
+    .btn:active { transform:translateY(0); }
+    .btn:disabled, .btn.disabled { opacity:0.4; cursor:not-allowed; transform:none; pointer-events:none; }
+    .btn-green  { background:var(--sage); color:#fff; }
+    .btn-outline{ background:transparent; color:var(--paper); border:1px solid rgba(255,255,255,0.25); }
+    .btn-red    { background:var(--rust); color:#fff; }
+    .btn-gold   { background:var(--gold); color:var(--ink); }
+    .btn-dark   { background:#3a3020; color:var(--paper); border:1px solid rgba(255,255,255,0.15); }
+    .btn-danger { background:#8a1a1a; color:#fff; }
+    .btn-orange { background:#b05000; color:#fff; }
+
+    .queue-list { list-style:none; max-height:260px; overflow-y:auto; }
+    .queue-list::-webkit-scrollbar { width:4px; }
+    .queue-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
+    .queue-list li { display:flex; align-items:center; gap:10px; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.88rem; }
+    .queue-list li:last-child { border-bottom:none; }
+    .q-num { font-family:'Playfair Display',serif; font-weight:700; font-size:1.1rem; min-width:36px; }
+    .q-badge { padding:2px 10px; border-radius:20px; font-size:0.7rem; font-weight:500; letter-spacing:0.05em; text-transform:uppercase; }
+    .badge-waiting { background:rgba(74,124,89,0.2); color:#7ec89a; }
+    .badge-called  { background:rgba(212,148,10,0.2); color:var(--gold); }
+
+    .report-section { margin-top:0; }
+    .report-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem; }
+    .report-header h2 { font-family:'Playfair Display',serif; font-size:1.15rem; }
+    .report-header span { font-size:0.75rem; color:var(--mid); }
+    .report-table { width:100%; border-collapse:collapse; }
+    .report-table th { text-align:left; padding:0.6rem 1rem; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--mid); border-bottom:1px solid rgba(255,255,255,0.07); }
+    .report-table td { padding:0.7rem 1rem; font-size:0.88rem; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .report-table tr:last-child td { border-bottom:none; }
+    .report-table tr:hover td { background:rgba(255,255,255,0.03); }
+    .td-missed { color:#e07070; }
+    .td-served { color:#7ec89a; }
+
+    .client-link { margin-top:1rem; display:inline-block; color:var(--mid); font-size:0.82rem; text-decoration:none; }
+    .client-link:hover { color:var(--paper); }
+
+    /* Modal */
+    .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:1000; align-items:center; justify-content:center; }
+    .modal-bg.show { display:flex; }
+    .modal-box { background:#28221a; border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:2rem; max-width:420px; width:90%; text-align:center; }
+    .modal-box h3 { font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:0.75rem; color:var(--gold); }
+    .modal-box p  { font-size:0.9rem; color:var(--mid); margin-bottom:1.5rem; line-height:1.6; }
+    .modal-actions { display:flex; gap:0.75rem; justify-content:center; }
+
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  </style>
+  <script>
+    const jornadaActiva = {{ 'true' if sesion_abierta else 'false' }};
+
+    async function llamarSiguiente() {
+      const res = await fetch('{{ url_for("empleado.empleado_llamar_siguiente") }}', {method:'POST'});
+      const data = await res.json();
+      if (data.error) { alert(data.error); return; }
+      document.getElementById('actual').innerHTML = data.numero;
+      cargarCola(); cargarReporte();
+    }
+    async function llamarEspecifico() {
+      const numero = prompt("Introduce el número de turno a llamar:");
+      if (!numero) return;
+      const res = await fetch('{{ url_for("empleado.empleado_llamar_especifico") }}', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({numero: parseInt(numero)})
+      });
+      const data = await res.json();
+      if (data.error) { alert(data.error); return; }
+      document.getElementById('actual').innerHTML = data.numero;
+      cargarCola(); cargarReporte();
+    }
+    async function marcarPerdido() {
+      if (!confirm('¿Marcar el turno actual como perdido (cliente no se presentó)?')) return;
+      const res = await fetch('{{ url_for("empleado.empleado_marcar_perdido") }}', {method:'POST'});
+      const data = await res.json();
+      if (data.error) { alert(data.error); return; }
+      document.getElementById('actual').innerHTML = '<span class="current-dash">—</span>';
+      cargarCola(); cargarReporte();
+    }
+    async function cargarCola() {
+      const res = await fetch('{{ url_for("empleado.empleado_cola_json") }}');
+      const data = await res.json();
+      const ul = document.getElementById('lista_cola');
+      ul.innerHTML = '';
+      if (data.length === 0) {
+        ul.innerHTML = '<li style="color:var(--mid);padding:0.6rem 0;font-size:0.85rem;">Cola vacía</li>';
+        return;
+      }
+      data.forEach(t => {
+        const li = document.createElement('li');
+        const cls = t.estado==='called' ? 'badge-called' : 'badge-waiting';
+        const lbl = t.estado==='called' ? 'Llamado' : 'Esperando';
+        li.innerHTML = `<span class="q-num">${t.numero}</span><span class="q-badge ${cls}">${lbl}</span>`;
+        ul.appendChild(li);
+      });
+    }
+    async function cargarReporte() {
+      const res = await fetch('{{ url_for("empleado.empleado_reporte_hoy_json") }}');
+      const data = await res.json();
+      document.getElementById('stat-total').innerText     = data.total;
+      document.getElementById('stat-espera').innerText    = data.en_espera;
+      document.getElementById('stat-atendidos').innerText = data.atendidos;
+      document.getElementById('stat-perdidos').innerText  = data.perdidos;
+      const tbody = document.getElementById('reporte-body');
+      tbody.innerHTML = '';
+      if (!data.todos || data.todos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--mid);padding:2rem;">Sin registros todavía.</td></tr>';
+        return;
+      }
+      data.todos.forEach(t => {
+        const tr = document.createElement('tr');
+        const cls = t.estado==='served' ? 'td-served' : (t.estado==='missed' ? 'td-missed' : '');
+        const etq = t.estado==='served' ? '&#10003; Atendido' : (t.estado==='missed' ? '&#10007; Perdido' : '&hellip;En curso');
+        tr.innerHTML = `
+          <td style="font-family:Playfair Display,serif;font-weight:700;">${t.numero}</td>
+          <td>${t.llamado_en||'—'}</td>
+          <td>${t.atendido_en||'—'}</td>
+          <td class="${cls}">${etq}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    function confirmarFin()    { document.getElementById('modal-fin').classList.add('show'); }
+    function cancelarFin()     { document.getElementById('modal-fin').classList.remove('show'); }
+    function confirmarInicio() { document.getElementById('modal-inicio').classList.add('show'); }
+    function cancelarInicio()  { document.getElementById('modal-inicio').classList.remove('show'); }
+    function descargarPdf()    { window.location.href='{{ url_for("empleado.descargar_reporte") }}'; }
+    window.onload = function() {
+      cargarCola(); cargarReporte();
+      setInterval(cargarCola,    5000);
+      setInterval(cargarReporte, 10000);
+      const el = document.getElementById('fecha-hoy');
+      if (el) el.innerText = new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    };
+  </script>
+</head>
+<body>
+
+<!-- Modal: Terminar jornada -->
+<div class="modal-bg" id="modal-fin">
+  <div class="modal-box">
+    <h3>&#9888; Terminar jornada</h3>
+    <p>Se cerrará la jornada actual. Los turnos en espera quedarán como <strong>perdidos</strong>.<br>Puedes descargar el reporte completo en PDF antes o después de cerrar.</p>
+    <div class="modal-actions">
+      <button class="btn btn-dark" onclick="cancelarFin()">Cancelar</button>
+      <button class="btn btn-gold" onclick="descargarPdf(); cancelarFin();">&#11015; Descargar PDF</button>
+      <a class="btn btn-danger" href="{{ url_for('empleado.terminar_jornada') }}">&#9632; Terminar</a>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Iniciar jornada -->
+<div class="modal-bg" id="modal-inicio">
+  <div class="modal-box">
+    <h3>Iniciar nueva jornada</h3>
+    <p>El contador de turnos se reiniciará desde <strong>1</strong> y se abrirá una nueva sesión de atención.</p>
+    <div class="modal-actions">
+      <button class="btn btn-dark" onclick="cancelarInicio()">Cancelar</button>
+      <a class="btn btn-green" href="{{ url_for('empleado.iniciar_jornada') }}">&#9654; Iniciar</a>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark">PE</div>
+    <div class="brand"><h1>Papelería Espacios</h1><p>Panel de empleados</p></div>
+  </div>
+  <span class="panel-badge">Staff</span>
+</header>
+
+<main>
+  <!-- Barra de jornada -->
+  <div class="jornada-bar">
+    <div class="jornada-info">
+      <div class="jornada-dot {% if sesion_abierta %}dot-open{% else %}dot-closed{% endif %}"></div>
+      <div class="jornada-label">
+        {% if sesion_abierta %}
+          <strong>Jornada activa</strong> &mdash; iniciada a las {{ hora_inicio }}
+        {% else %}
+          <strong>Jornada cerrada</strong> &mdash; sin sesión activa
+        {% endif %}
+      </div>
+    </div>
+    <div class="jornada-actions">
+      {% if sesion_abierta %}
+        <button class="btn btn-gold"   onclick="descargarPdf()">&#11015; Descargar PDF</button>
+        <button class="btn btn-danger" onclick="confirmarFin()">&#9632; Terminar jornada</button>
+      {% else %}
+        <button class="btn btn-gold"   onclick="descargarPdf()">&#11015; Último reporte PDF</button>
+        <button class="btn btn-green"  onclick="confirmarInicio()">&#9654; Iniciar jornada</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-val" id="stat-total">—</div><div class="stat-lbl">Turnos totales</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-espera">—</div><div class="stat-lbl">En espera</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-atendidos">—</div><div class="stat-lbl">Atendidos</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-perdidos">—</div><div class="stat-lbl">Perdidos</div></div>
+  </div>
+
+  <div class="grid">
+    <!-- Turno actual -->
+    <div class="card">
+      <div class="card-title">Turno en pantalla</div>
+      <div class="current-number" id="actual">
+        {% if actual_numero %}{{ actual_numero }}{% else %}<span class="current-dash">—</span>{% endif %}
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-green   {% if not sesion_abierta %}disabled{% endif %}" onclick="llamarSiguiente()">&#9654; Siguiente</button>
+        <button class="btn btn-outline {% if not sesion_abierta %}disabled{% endif %}" onclick="llamarEspecifico()"># Específico</button>
+        {% if sesion_abierta %}
+          <a class="btn btn-red" href="{{ url_for('empleado.empleado_servir_actual') }}">&#10003; Atendido</a>
+        {% else %}
+          <span class="btn btn-red disabled">&#10003; Atendido</span>
+        {% endif %}
+        <button class="btn btn-orange {% if not sesion_abierta %}disabled{% endif %}" onclick="marcarPerdido()">&#10007; Perdido</button>
+      </div>
+    </div>
+
+    <!-- Cola en vivo -->
+    <div class="card">
+      <div class="card-title">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--sage);margin-right:6px;animation:pulse 2s infinite;"></span>
+        Cola en vivo
+      </div>
+      <ul class="queue-list" id="lista_cola">
+        <li style="color:var(--mid);padding:0.6rem 0;">Cargando&hellip;</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tabla de registro -->
+  <div class="card report-section">
+    <div class="report-header">
+      <h2>Registro de turnos &mdash; sesión actual</h2>
+      <span id="fecha-hoy"></span>
+    </div>
+    <table class="report-table">
+      <thead>
+        <tr><th>Turno</th><th>Llamado a las</th><th>Fin a las</th><th>Estado</th></tr>
+      </thead>
+      <tbody id="reporte-body">
+        <tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--mid);">Cargando&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <a class="client-link" href="{{ url_for('client.cliente_index') }}">&#8592; Ver pantalla de clientes</a>
+</main>
+</body>
+</html>

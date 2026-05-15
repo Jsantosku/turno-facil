@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Papelería Espacios — Turnos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#1a1209; --paper:#fdf8ef; --cream:#f5ead6; --rust:#c0440a; --gold:#d4940a; --sage:#4a7c59; --mid:#8c7a60; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; }
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events:none; z-index:999;
+    }
+    header { background:var(--ink); color:var(--paper); padding:1.5rem 2rem; display:flex; align-items:center; gap:1.5rem; border-bottom:4px solid var(--rust); }
+    .logo-mark { width:52px; height:52px; background:var(--rust); border-radius:4px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; color:var(--paper); flex-shrink:0; }
+    .brand h1 { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; letter-spacing:-0.02em; line-height:1.1; }
+    .brand p  { font-size:0.78rem; font-weight:300; color:var(--mid); letter-spacing:0.12em; text-transform:uppercase; margin-top:2px; }
+    main { max-width:560px; margin:0 auto; padding:2.5rem 1.5rem 4rem; }
+    .closed-banner { background:#3a1a0a; color:#f5c5a0; border:2px solid var(--rust); border-radius:8px; padding:1.5rem; text-align:center; margin-bottom:2rem; }
+    .closed-banner h2 { font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:0.4rem; }
+    .closed-banner p  { font-size:0.88rem; opacity:0.8; }
+    .take-turn-card { background:var(--cream); border:2px solid var(--ink); border-radius:8px; padding:2rem; margin-bottom:2rem; text-align:center; position:relative; overflow:hidden; }
+    .take-turn-card::after { content:''; position:absolute; bottom:-30px; right:-30px; width:120px; height:120px; border:3px solid var(--gold); border-radius:50%; opacity:0.25; }
+    .take-turn-card h2 { font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:1.2rem; }
+    .btn-tomar { background:var(--rust); color:#fff; border:none; padding:1rem 2.5rem; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:500; border-radius:4px; cursor:pointer; letter-spacing:0.04em; transition:background 0.2s,transform 0.1s; }
+    .btn-tomar:hover { background:#a33a08; transform:translateY(-1px); }
+    .btn-tomar:disabled { background:var(--mid); cursor:not-allowed; transform:none; }
+    .ticket-alert { background:var(--sage); color:#fff; border-radius:8px; padding:1.5rem 2rem; margin-bottom:2rem; display:flex; align-items:center; gap:1.5rem; animation:fadeIn 0.4s ease; }
+    .ticket-num-big { font-family:'Playfair Display',serif; font-size:3.5rem; font-weight:900; line-height:1; flex-shrink:0; }
+    .ticket-info h3 { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; opacity:0.8; }
+    .ticket-info p  { font-size:1rem; margin-top:4px; }
+    .queue-section h2 { font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
+    .queue-section h2::after { content:''; flex:1; height:1px; background:var(--mid); opacity:0.4; }
+    .queue-list { list-style:none; }
+    .queue-list li { display:flex; align-items:center; padding:0.75rem 1rem; border-bottom:1px solid rgba(0,0,0,0.06); font-size:0.9rem; gap:12px; }
+    .queue-list li:last-child { border-bottom:none; }
+    .q-num { font-family:'Playfair Display',serif; font-weight:700; font-size:1.2rem; min-width:42px; }
+    .q-badge { padding:2px 10px; border-radius:20px; font-size:0.72rem; font-weight:500; letter-spacing:0.05em; text-transform:uppercase; }
+    .badge-waiting { background:#e8f4ec; color:var(--sage); }
+    .badge-called  { background:#fff3e0; color:#b36200; }
+    .empty-queue { text-align:center; padding:2rem; color:var(--mid); font-size:0.9rem; border:1px dashed var(--mid); border-radius:8px; opacity:0.7; }
+    footer { text-align:center; padding:1rem; font-size:0.78rem; color:var(--mid); margin-top:2rem; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:none;} }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo-mark">PE</div>
+  <div class="brand"><h1>Papelería Espacios</h1><p>Sistema de turnos en línea</p></div>
+</header>
+<main>
+  {% if not sesion_abierta %}
+  <div class="closed-banner">
+    <h2>&#9888; Jornada no iniciada</h2>
+    <p>El sistema de turnos no está activo en este momento.</p>
+  </div>
+  {% endif %}
+
+  {% if ticket %}
+  <div class="ticket-alert">
+    <div class="ticket-num-big">{{ ticket.numero }}</div>
+    <div class="ticket-info">
+      <h3>Tu número de turno</h3>
+      <p>Posición en cola: <strong>{{ posicion }}</strong></p>
+      <p style="font-size:0.82rem;opacity:0.85;margin-top:4px;">Refresca la página para actualizar tu posición.</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="take-turn-card">
+    <h2>¿Listo para ser atendido?</h2>
+    <form method="post" action="{{ url_for('client.tomar_turno') }}">
+      <button class="btn-tomar" type="submit" {% if not sesion_abierta %}disabled{% endif %}>
+        {% if sesion_abierta %}Tomar un turno{% else %}Sistema cerrado{% endif %}
+      </button>
+    </form>
+  </div>
+
+  {% if sesion_abierta %}
+  <div class="queue-section">
+    <h2>Cola actual</h2>
+    {% if cola %}
+    <ul class="queue-list">
+      {% for t in cola %}
+      <li>
+        <span class="q-num">{{ t.numero }}</span>
+        <span class="q-badge {% if t.estado == 'called' %}badge-called{% else %}badge-waiting{% endif %}">
+          {{ 'Llamado' if t.estado == 'called' else 'Esperando' }}
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty-queue">No hay turnos en espera por el momento.</div>
+    {% endif %}
+  </div>
+  {% endif %}
+</main>
+<footer>Papelería Espacios &copy; {{ now.year }} &mdash; Av. Principal, Mérida, Yucatán</footer>
+</body>
+</html>

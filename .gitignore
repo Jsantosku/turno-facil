@@ -1,0 +1,19 @@
+# Entornos virtuales
+venv/
+env/
+.env
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Bases de datos y carpetas de instancia
+instance/
+*.sqlite3
+*.db
+
+# Configuración del IDE (opcional pero recomendado)
+.vscode/
+.idea/
