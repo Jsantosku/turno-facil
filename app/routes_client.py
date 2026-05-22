@@ -7,6 +7,11 @@ from app.utils import sesion_activa, proximo_numero
 client_bp = Blueprint('client', __name__)
 
 @client_bp.route('/', methods=['GET'])
+def inicio_redirect():
+    return redirect(url_for('empleado.empleado_index'))
+
+
+@client_bp.route('/cliente', methods=['GET'])
 def cliente_index():
     s = sesion_activa()
     ticket_id = request.args.get('ticket_id', type=int)

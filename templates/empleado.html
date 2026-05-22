@@ -90,6 +90,11 @@
   <script>
     const jornadaActiva = {{ 'true' if sesion_abierta else 'false' }};
 
+    function iniciarJornadaConCliente() {
+      window.open('{{ url_for("client.cliente_index") }}', '_blank');
+      window.location.href = '{{ url_for("empleado.iniciar_jornada") }}';
+    }
+
     async function llamarSiguiente() {
       const res = await fetch('{{ url_for("empleado.empleado_llamar_siguiente") }}', {method:'POST'});
       const data = await res.json();
@@ -195,7 +200,7 @@
     <p>El contador de turnos se reiniciará desde <strong>1</strong> y se abrirá una nueva sesión de atención.</p>
     <div class="modal-actions">
       <button class="btn btn-dark" onclick="cancelarInicio()">Cancelar</button>
-      <a class="btn btn-green" href="{{ url_for('empleado.iniciar_jornada') }}">&#9654; Iniciar</a>
+      <button class="btn btn-green" onclick="iniciarJornadaConCliente()">&#9654; Iniciar</button>
     </div>
   </div>
 </div>
